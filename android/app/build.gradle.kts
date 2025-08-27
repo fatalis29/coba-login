@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // Tambahkan plugin Flutter
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -18,14 +17,24 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+    getByName("release") {
+        // Aktifkan code shrinking
+        isMinifyEnabled = true  
+
+        // Aktifkan resource shrinking (hanya bekerja kalau minifyEnabled = true)
+        isShrinkResources = true  
+
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
     }
+    getByName("debug") {
+        // Biasanya untuk debug, shrink & minify dimatikan supaya cepat build
+        isMinifyEnabled = false
+        isShrinkResources = false
+    }
+}
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
